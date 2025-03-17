@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 // Constants for game settings
 const GRAVITY = 0.5;
-const JUMP_FORCE = -10;
+const JUMP_FORCE = -7; // Reduced from -10 to -7 for lower jumps
 const PIPE_WIDTH = 80;
 const INITIAL_PIPE_GAP = 230; // Larger initial gap
 const MIN_PIPE_GAP = 170; // Minimum gap size
