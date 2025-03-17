@@ -15,8 +15,7 @@ const FloppyBird = () => {
     GROUND_HEIGHT,
     BIRD_WIDTH,
     BIRD_HEIGHT,
-    PIPE_WIDTH,
-    PIPE_GAP
+    PIPE_WIDTH
   } = useGameLogic();
 
   const handleInteraction = (e: React.MouseEvent | React.TouchEvent | React.KeyboardEvent) => {
@@ -69,7 +68,7 @@ const FloppyBird = () => {
             x={pipe.x}
             topHeight={pipe.topHeight}
             pipeWidth={PIPE_WIDTH}
-            pipeGap={PIPE_GAP}
+            pipeGap={pipe.gap} // Use the pipe's individual gap size
             gameHeight={gameSize.height}
             groundHeight={GROUND_HEIGHT}
           />

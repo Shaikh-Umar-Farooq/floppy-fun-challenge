@@ -5,7 +5,9 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 const GRAVITY = 0.5;
 const JUMP_FORCE = -10;
 const PIPE_WIDTH = 80;
-const PIPE_GAP = 170;
+const INITIAL_PIPE_GAP = 230; // Larger initial gap
+const MIN_PIPE_GAP = 170; // Minimum gap size
+const PIPE_GAP_DECREASE_RATE = 5; // How much to decrease the gap per point
 const PIPE_SPACING = 220;
 const BIRD_WIDTH = 40;
 const BIRD_HEIGHT = 30;
@@ -19,6 +21,7 @@ interface GameState {
     id: number;
     x: number;
     topHeight: number;
+    gap: number; // Store gap size with each pipe
   }>;
   gameStarted: boolean;
   gameOver: boolean;
@@ -48,6 +51,12 @@ export const useGameLogic = () => {
   const requestRef = useRef<number>();
   const lastTimeRef = useRef<number>(0);
   const pipeIdRef = useRef<number>(0);
+
+  // Calculate current pipe gap based on score
+  const calculatePipeGap = (score: number) => {
+    const gap = INITIAL_PIPE_GAP - (score * PIPE_GAP_DECREASE_RATE);
+    return Math.max(gap, MIN_PIPE_GAP); // Don't go below minimum gap
+  };
 
   // Initialize game dimensions and bird position
   useEffect(() => {
@@ -108,12 +117,15 @@ export const useGameLogic = () => {
         // Add new pipe if needed
         if (updatedPipes.length === 0 || 
             updatedPipes[updatedPipes.length - 1].x < gameSize.width - PIPE_SPACING) {
-          const topHeight = Math.random() * (gameSize.height - GROUND_HEIGHT - PIPE_GAP - 100) + 50;
+          // Calculate current gap based on score
+          const currentGap = calculatePipeGap(prevState.score);
+          const topHeight = Math.random() * (gameSize.height - GROUND_HEIGHT - currentGap - 100) + 50;
           
           updatedPipes.push({
             id: pipeIdRef.current++,
             x: gameSize.width,
-            topHeight
+            topHeight,
+            gap: currentGap // Store the gap with each pipe
           });
         }
         
@@ -152,8 +164,8 @@ export const useGameLogic = () => {
               pipeCollision = true;
             }
             
-            // Check collision with bottom pipe
-            if (birdRect.bottom > pipe.topHeight + PIPE_GAP) {
+            // Check collision with bottom pipe, using pipe's stored gap
+            if (birdRect.bottom > pipe.topHeight + pipe.gap) {
               pipeCollision = true;
             }
           }
@@ -231,6 +243,9 @@ export const useGameLogic = () => {
     lastTimeRef.current = 0;
     pipeIdRef.current = 0;
   };
+  
+  // Current pipe gap for external components
+  const PIPE_GAP = state.score > 0 ? calculatePipeGap(state.score) : INITIAL_PIPE_GAP;
   
   return {
     state,
