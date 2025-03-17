@@ -1,9 +1,10 @@
-
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useIsMobile } from './use-mobile';
 
 // Constants for game settings
 const GRAVITY = 0.5;
-const JUMP_FORCE = -7; // Reduced from -10 to -7 for lower jumps
+const DESKTOP_JUMP_FORCE = -7; // For desktop devices (already reduced)
+const MOBILE_JUMP_FORCE = -5; // Even gentler jump for mobile devices
 const PIPE_WIDTH = 80;
 const INITIAL_PIPE_GAP = 230; // Larger initial gap
 const MIN_PIPE_GAP = 170; // Minimum gap size
@@ -35,6 +36,9 @@ interface GameSize {
 }
 
 export const useGameLogic = () => {
+  const isMobile = useIsMobile();
+  const JUMP_FORCE = isMobile ? MOBILE_JUMP_FORCE : DESKTOP_JUMP_FORCE;
+  
   const [gameSize, setGameSize] = useState<GameSize>({ width: 0, height: 0 });
   const gameContainerRef = useRef<HTMLDivElement>(null);
   
