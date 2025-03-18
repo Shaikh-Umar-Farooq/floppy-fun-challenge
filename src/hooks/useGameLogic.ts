@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useIsMobile } from './use-mobile';
 
 // Constants for game settings
-const GRAVITY = 0.5;
+const GRAVITY = 0.4;
 const DESKTOP_JUMP_FORCE = -7; // For desktop devices (already reduced)
 const MOBILE_JUMP_FORCE = -5; // Even gentler jump for mobile devices
 const PIPE_WIDTH = 80;
